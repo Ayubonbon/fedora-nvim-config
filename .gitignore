@@ -1,0 +1,4 @@
+plugin/
+pack/
+lazy-lock.json
+*.log
