@@ -11,7 +11,7 @@ local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
   local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-  if vim.v.shell_error ~= 0 then error('Error cloning lazy.nvim:\n' .. out) end
+  if vim.v.shell_error ~= 0 then error('error cloning lazy.nvim:\n' .. out) end
 end
 
 local rtp = vim.opt.rtp
@@ -23,7 +23,7 @@ require('lazy').setup({
     branch = "v3.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
+      "muniftanjim/nui.nvim",
       "nvim-tree/nvim-web-devicons", -- optional, but recommended
     },
     lazy = false, -- neo-tree will lazily load itself
@@ -45,4 +45,27 @@ require('lazy').setup({
   end,
 },
 
-})
+-- mason
+{
+    "williamboman/mason.nvim",
+
+    config = function()
+      require("mason").setup()
+    end,
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+  },
+   {
+    "neovim/nvim-lspconfig",
+  },{
+    "mfussenegger/nvim-jdtls",
+  },
+
+  --treesitter
+  {
+  "nvim-treesitter/nvim-treesitter",
+  build = ":TSUpdate",
+},
+ })
+

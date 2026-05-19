@@ -1,0 +1,5 @@
+plugin/
+pack/
+.lazy/
+mason/
+undo/
