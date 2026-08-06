@@ -55,17 +55,91 @@ require('lazy').setup({
   },
   {
     "williamboman/mason-lspconfig.nvim",
+
+
+    config = function()
+        require("mason-lspconfig").setup({
+            ensure_installed = {
+                "lua_ls",
+            },
+        })
+    end,
   },
-   {
+
+  {
     "neovim/nvim-lspconfig",
-  },{
-    "mfussenegger/nvim-jdtls",
-  },
+    dependencies = {
+        "saghen/blink.cmp",
+    },
+
+    config = function()
+        local lspconfig = require("lspconfig")
+
+        vim.diagnostic.config({
+            virtual_text = true,
+            signs = true,
+            underline = true,
+            update_in_insert = false,
+        })
+
+        local capabilities = require("blink.cmp").get_lsp_capabilities()
+
+        lspconfig.lua_ls.setup({
+            capabilities = capabilities,
+        })
+
+        lspconfig.jdtls.setup({
+            capabilities = capabilities,
+        })
+    end,
+},
+
+  {
+    "saghen/blink.cmp",
+    version = "*",
+
+    opts = {
+        keymap = {
+            preset = "default",
+        },
+
+        appearance = {
+            nerd_font_variant = "mono",
+        },
+
+        completion = {
+            documentation = {
+                auto_show = true,
+            },
+        },
+
+        sources = {
+            default = { "lsp", "path", "snippets", "buffer" },
+        },
+
+        fuzzy = {
+            implementation = "prefer_rust_with_warning",
+        },
+    },
+},
+
 
   --treesitter
   {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
 },
+
+{
+  'mrcjkb/rustaceanvim',
+  -- To avoid being surprised by breaking changes,
+  -- I recommend you set a version range
+  version = '^9',
+  -- This plugin implements proper lazy-loading (see :h lua-plugin-lazy).
+  -- No need for lazy.nvim to lazy-load it.
+  lazy = false,
+},
  })
+
+
 
