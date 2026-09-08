@@ -3,6 +3,7 @@ require 'core.keymaps'
 
 vim.wo.number = true
 vim.opt.termguicolors = true
+vim.opt.relativenumber = true
 
 
 -- lazy.vim setup ---------------------------------------------------
@@ -18,24 +19,23 @@ local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
 require('lazy').setup({
-{
+  {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "muniftanjim/nui.nvim",
-      "nvim-tree/nvim-web-devicons", -- optional, but recommended
+      "nvim-tree/nvim-web-devicons",
     },
-    lazy = false, -- neo-tree will lazily load itself
+    lazy = false,
   },
-
   {
   "catppuccin/nvim",
   name = "catppuccin",
   priority = 1000,
   config = function()
     require("catppuccin").setup({
-      flavour = "mocha",
+      flavour = "macchiato",
       transparent_background = true,
       integrations = {
     treesitter = true,
@@ -45,101 +45,91 @@ require('lazy').setup({
   end,
 },
 
--- mason
-{
+    -- mason
+  {
     "williamboman/mason.nvim",
-
     config = function()
       require("mason").setup()
     end,
   },
   {
     "williamboman/mason-lspconfig.nvim",
-
-
     config = function()
-        require("mason-lspconfig").setup({
-            ensure_installed = {
-                "lua_ls",
-            },
-        })
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "lua_ls",
+        },
+      })
     end,
   },
 
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-        "saghen/blink.cmp",
+      "saghen/blink.cmp",
     },
 
     config = function()
-        local lspconfig = require("lspconfig")
+      vim.diagnostic.config({
+        virtual_text = true,
+        signs = true,
+        underline = true,
+        update_in_insert = false,
+      })
 
-        vim.diagnostic.config({
-            virtual_text = true,
-            signs = true,
-            underline = true,
-            update_in_insert = false,
-        })
+      -- Set blink capabilities globally for all LSP servers
+      vim.lsp.config("*", {
+        capabilities = require("blink.cmp").get_lsp_capabilities(),
+      })
 
-        local capabilities = require("blink.cmp").get_lsp_capabilities()
-
-        lspconfig.lua_ls.setup({
-            capabilities = capabilities,
-        })
-
-        lspconfig.jdtls.setup({
-            capabilities = capabilities,
-        })
+      -- Register server configurations
+      vim.lsp.config("lua_ls", {})
+      
+      -- Enable servers
+      vim.lsp.enable({ "lua_ls" })
     end,
-},
+  },
 
   {
     "saghen/blink.cmp",
     version = "*",
 
     opts = {
-        keymap = {
-            preset = "default",
-        },
+      keymap = {
+        preset = "enter",
+      },
 
-        appearance = {
-            nerd_font_variant = "mono",
-        },
+      appearance = {
+        nerd_font_variant = "mono",
+      },
 
-        completion = {
-            documentation = {
-                auto_show = true,
-            },
+      completion = {
+        documentation = {
+          auto_show = true,
         },
+      },
 
-        sources = {
-            default = { "lsp", "path", "snippets", "buffer" },
-        },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
 
-        fuzzy = {
-            implementation = "prefer_rust_with_warning",
-        },
+      fuzzy = {
+        implementation = "prefer_rust_with_warning",
+      },
     },
-},
+  },
 
-
-  --treesitter
+  -- treesitter
   {
-  "nvim-treesitter/nvim-treesitter",
-  build = ":TSUpdate",
-},
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+  },
 
-{
-  'mrcjkb/rustaceanvim',
-  -- To avoid being surprised by breaking changes,
-  -- I recommend you set a version range
-  version = '^9',
-  -- This plugin implements proper lazy-loading (see :h lua-plugin-lazy).
-  -- No need for lazy.nvim to lazy-load it.
-  lazy = false,
-},
- })
-
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^9',
+    lazy = false,
+  },
+})
 
 

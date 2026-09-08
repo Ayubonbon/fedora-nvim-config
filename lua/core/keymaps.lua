@@ -3,18 +3,23 @@ vim.g.mapleader = " "
 
 -- Map <leader>e to toggle Neo-tree
 vim.keymap.set('n', '<leader>e', '<Cmd>Neotree toggle<CR>', { desc = 'Toggle Neo-tree' })
+
+
+-- F5: Run Rust project using Cargo
 vim.keymap.set("n", "<F5>", function()
-  local dir = vim.fn.expand("%:p:h")
-  local file = vim.fn.expand("%:t")
-  local class = vim.fn.expand("%:t:r")
+  vim.cmd("write")
 
-  -- Map <F5> to run java program
-  vim.cmd("split | terminal")
-  vim.fn.chansend(vim.b.terminal_job_id,
-    "cd " .. dir .. " && javac " .. file .. " && java " .. class .. "\n")
-end, { desc = "Run Java File" })
+  vim.cmd("botright split")
+  vim.cmd("resize 12")
+  vim.cmd("terminal cargo run")
 
--- Map <leader>ts to run typescript file
+  vim.cmd("startinsert")
+end, {
+  desc = "Run Rust project",
+})
+
+
+ -- Map <leader>ts to run typescript file
 vim.keymap.set("n", "<F6>", function()
   local dir = vim.fn.expand("%:p:h")
   local file = vim.fn.expand("%:t")
